@@ -1,0 +1,90 @@
+version: "3.2"
+ 
+services:
+  node1:
+    image: elasticsearch:7.6.2
+    hostname: node1
+    environment:
+      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+      - "cluster.name=escluster"
+      - "node.name=node1"
+      - "bootstrap.memory_lock=false"
+      - "network.host=0.0.0.0"
+#      - "http.port=9200"
+      - "discovery.zen.ping.unicast.hosts=node2,node3"
+      - "discovery.zen.minimum_master_nodes=2"
+      - "cluster.initial_master_nodes=node1,node2,node3"    
+    networks:
+      - backnet
+    volumes:
+      - node1data:/usr/share/elasticsearch/data
+#      - /elasticsnapshots:/opt/elasticsearch/backup
+    port:
+      - 9200:9200
+    deploy:
+#      endpoint_mode: dnsrr #use once I have my own proxy(nginx) in front with DNS round robin mode
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.data == data.1
+
+  node2:
+    image: elasticsearch:7.6.2
+    hostname: node2
+    environment:
+      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+      - "cluster.name=escluster"
+      - "node.name=node2"
+      - "bootstrap.memory_lock=false"
+      - "network.host=0.0.0.0"
+#      - "http.port=9200"
+      - "discovery.zen.ping.unicast.hosts=node1,node3"
+      - "discovery.zen.minimum_master_nodes=2"
+      - "cluster.initial_master_nodes=node1,node2,node3"
+    networks:
+      - backnet
+    volumes:
+      - node2data:/usr/share/elasticsearch/data
+#      - /elasticsnapshots:/opt/elasticsearch/backup
+    port:
+      - 9200:9200
+    deploy:
+#      endpoint_mode: dnsrr #use once I have my own proxy(nginx) in front with DNS round robin mode
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.data == data.2
+  node3:
+    image: elasticsearch:7.6.2
+    hostname: node3
+    environment:
+      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+      - "cluster.name=escluster"
+      - "node.name=node3"
+      - "bootstrap.memory_lock=false"
+      - "network.host=0.0.0.0"
+#      - "http.port=9200"
+      - "discovery.zen.ping.unicast.hosts=node1,node2"
+      - "discovery.zen.minimum_master_nodes=2"
+      - "cluster.initial_master_nodes=node1,node2,node3"
+    networks:
+      - backnet
+    volumes:
+      - node3data:/usr/share/elasticsearch/data
+#      - /elasticsnapshots:/opt/elasticsearch/backup
+    port:
+      - 9200:9200
+    deploy:
+#      endpoint_mode: dnsrr #use once I have my own proxy(nginx) in front with DNS round robin mode
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.data == data.3
+
+networks:
+  backnet:
+    external: true
+volumes:
+  node1data:
+  node2data:
+  node3data:
