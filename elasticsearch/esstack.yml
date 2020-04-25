@@ -5,7 +5,7 @@ services:
     image: elasticsearch:7.6.2
     hostname: node1
     environment:
-      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
       - "cluster.name=escluster"
       - "node.name=node1"
       - "bootstrap.memory_lock=false"
@@ -19,7 +19,7 @@ services:
     volumes:
       - node1data:/usr/share/elasticsearch/data
 #      - /elasticsnapshots:/opt/elasticsearch/backup
-    port:
+    ports:
       - 9200:9200
     deploy:
 #      endpoint_mode: dnsrr #use once I have my own proxy(nginx) in front with DNS round robin mode
@@ -32,7 +32,7 @@ services:
     image: elasticsearch:7.6.2
     hostname: node2
     environment:
-      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
       - "cluster.name=escluster"
       - "node.name=node2"
       - "bootstrap.memory_lock=false"
@@ -46,8 +46,8 @@ services:
     volumes:
       - node2data:/usr/share/elasticsearch/data
 #      - /elasticsnapshots:/opt/elasticsearch/backup
-    port:
-      - 9200:9200
+    ports:
+      - 9201:9201
     deploy:
 #      endpoint_mode: dnsrr #use once I have my own proxy(nginx) in front with DNS round robin mode
       replicas: 1
@@ -58,7 +58,7 @@ services:
     image: elasticsearch:7.6.2
     hostname: node3
     environment:
-      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
       - "cluster.name=escluster"
       - "node.name=node3"
       - "bootstrap.memory_lock=false"
@@ -72,8 +72,8 @@ services:
     volumes:
       - node3data:/usr/share/elasticsearch/data
 #      - /elasticsnapshots:/opt/elasticsearch/backup
-    port:
-      - 9200:9200
+    ports:
+      - 9202:9202
     deploy:
 #      endpoint_mode: dnsrr #use once I have my own proxy(nginx) in front with DNS round robin mode
       replicas: 1
